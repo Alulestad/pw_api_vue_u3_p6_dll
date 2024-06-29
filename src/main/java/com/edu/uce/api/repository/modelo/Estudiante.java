@@ -2,8 +2,6 @@ package com.edu.uce.api.repository.modelo;
 
 import java.time.LocalDateTime;
 
-
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +27,8 @@ public class Estudiante {
 	private String apellido;
 	@Column(name = "estu_fecha_nacimiento")
 	private LocalDateTime fechaNacimiento;
+	@Column(name = "estu_genero")
+	private String genero;
 	
 	//GET Y SET
 	
@@ -56,6 +56,13 @@ public class Estudiante {
 	public void setFechaNacimiento(LocalDateTime fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
 	}
+	public String getGenero() {
+		return genero;
+	}
+	public void setGenero(String genero) {
+		this.genero = genero;
+	}
+	
 	
 	
 }
