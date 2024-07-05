@@ -75,26 +75,33 @@ public class EstudianteController {
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/buscar/3/nuevo/asdf
 	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/3
 	@GetMapping(path="/{id}")
-	public Estudiante buscar(@PathVariable Integer id) {
+	public Estudiante buscarPorId(@PathVariable Integer id) {
 
 		return this.estudianteService.buscar(id);
 	}
 	
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/buscarPorGenero?genero=F&edad=26
-	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/3
-	@GetMapping(path="/buscarPorGenero")
-	public List<Estudiante> buscarPorGenero(@RequestParam String genero,
-				@RequestParam Integer edad) {
-		System.out.println("edad: "+edad);
-		
-		return this.estudianteService.buscarPorGenero(genero);
+	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/genero?genero=F
+	@GetMapping(path = "/genero")
+	public List<Estudiante> buscarPorGenero(@RequestParam String genero) {
+		List <Estudiante> lista= this.estudianteService.buscarPorGenero(genero);
+		return lista;
 	}
 	
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/buscarMixto/3?prueba=HolaMundo
-	@GetMapping(path="/buscarMixto/{id}")
+	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/mixto/3?prueba=HolaMundo
+	@GetMapping(path="/mixto/{id}")
 	public Estudiante buscarMixto(@PathVariable Integer id,@RequestParam String prueba) {
 		System.out.println("id: "+id);
 		System.out.println("prueba: "+prueba);
+		
+		return this.estudianteService.buscar(id);
+	}
+	
+	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/test/3
+	@GetMapping(path="/test/{id}")
+	public Estudiante test(@PathVariable Integer id,@RequestBody Estudiante est) {
+		System.out.println("est: "+est);
 		
 		return this.estudianteService.buscar(id);
 	}
