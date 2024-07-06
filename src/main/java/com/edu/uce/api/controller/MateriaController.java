@@ -26,28 +26,29 @@ public class MateriaController {
 	@Autowired
 	private IMateriaService iMateriaService;
 	
-	//http://localhost:8080/API/v1.0/Matricula/materias/guardar
-	@PostMapping(path = "/guardar")
+	//http://localhost:8080/API/v1.0/Matricula/materias
+	@PostMapping
 	public void guardar(@RequestBody Materia materia) {
 		this.iMateriaService.guardar(materia);
 	}
 	
-	//http://localhost:8080/API/v1.0/Matricula/materias/guardar
-	@GetMapping(path = "/buscar/{id}")
+	//http://localhost:8080/API/v1.0/Matricula/materias/1
+	@GetMapping(path = "/{id}")
 	public Materia buscar(@PathVariable Integer id) {
-		System.out.println("Id: "+id);
 		return this.iMateriaService.buscar(id);
 	}
 	
-	//http://localhost:8080/API/v1.0/Matricula/materias/actualizar
-	@PutMapping(path = "/actualizar")
-	public void actualizar(@RequestBody Materia materia) {
+	//http://localhost:8080/API/v1.0/Matricula/materias
+	@PutMapping(path = "/{id}")
+	public void actualizar(@RequestBody Materia materia, @PathVariable Integer id) {
+		materia.setId(id);
 		this.iMateriaService.actualizar(materia);
 	}
 	
-	//http://localhost:8080/API/v1.0/Matricula/materias/actualizarParcial
-	@PatchMapping(path = "/actualizarParcial")
-	public void actualizarParcial(@RequestBody Materia materia) {
+	//http://localhost:8080/API/v1.0/Matricula/materias/4
+	@PatchMapping(path = "/{id}")
+	public void actualizarParcial(@RequestBody Materia materia,@PathVariable Integer id) {
+		materia.setId(id);
 		Materia materia2=this.iMateriaService.buscar(materia.getId());
 		if(materia.getNombre()!=null) {
 			materia2.setNombre(materia.getNombre());
@@ -68,18 +69,18 @@ public class MateriaController {
 		this.iMateriaService.actualizar(materia2);
 	}
 	
-	//http://localhost:8080/API/v1.0/Matricula/materias/borrar/2
-	@DeleteMapping(path = "/borrar/{id}")
+	//http://localhost:8080/API/v1.0/Matricula/materias/6
+	@DeleteMapping(path = "/{id}")
 	public void borrar(@PathVariable Integer id) {
 		this.iMateriaService.borrar(id);
 	}
 	
 	
-	//http://localhost:8080/API/v1.0/Matricula/materias/buscarPorHoras/120
-	@GetMapping(path = "/buscarPorHoras")
-	public List<Materia> buscarPorHoras(@RequestParam Integer horas){
+	//http://localhost:8080/API/v1.0/Matricula/materias/hora?hora=120
+	@GetMapping(path = "/hora")
+	public List<Materia> buscarPorHora(@RequestParam Integer hora){
 		
-		return this.iMateriaService.buscarPorHoras(horas);
+		return this.iMateriaService.buscarPorHoras(hora);
 	}
 	
 }
