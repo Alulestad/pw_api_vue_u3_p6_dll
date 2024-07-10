@@ -31,7 +31,7 @@ public class EstudianteController {
 	@PostMapping
 	public ResponseEntity<Estudiante> guardar(@RequestBody Estudiante est) {
 		this.estudianteService.guardar(est);
-		//esto deveria consultar aca
+		//esto deberia consultar aca
 		return ResponseEntity.status(201).body(est);
 	}
 	
@@ -89,11 +89,11 @@ public class EstudianteController {
 	}
 	
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/buscarPorGenero?genero=F&edad=26
-	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/genero?genero=F
+	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/genero?genero=M
 	@GetMapping(path = "/genero")
-	public List<Estudiante> buscarPorGenero(@RequestParam String genero) {
+	public ResponseEntity<List<Estudiante>> buscarPorGenero(@RequestParam String genero) {
 		List <Estudiante> lista= this.estudianteService.buscarPorGenero(genero);
-		return lista;
+		return ResponseEntity.status(235).body(lista);
 	}
 	
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/buscarMixto/3?prueba=HolaMundo

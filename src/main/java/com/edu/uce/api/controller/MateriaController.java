@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,62 +26,74 @@ public class MateriaController {
 
 	@Autowired
 	private IMateriaService iMateriaService;
-	
-	//http://localhost:8080/API/v1.0/Matricula/materias
+
+	// Nivel1
+	// http://localhost:8080/API/v1.0/Matricula/materias
 	@PostMapping
-	public void guardar(@RequestBody Materia materia) {
+	public ResponseEntity<Materia> guardar(@RequestBody Materia materia) {
 		this.iMateriaService.guardar(materia);
+		// de manera temporanea hago directo, pero deberia
+		// cconsultar en la base de datos
+		return ResponseEntity.status(201).body(materia);
 	}
-	
-	//http://localhost:8080/API/v1.0/Matricula/materias/1
-	@GetMapping(path = "/{id}")
-	public Materia buscar(@PathVariable Integer id) {
-		return this.iMateriaService.buscar(id);
-	}
-	
-	//http://localhost:8080/API/v1.0/Matricula/materias
+
+	// Nivel1
+	// http://localhost:8080/API/v1.0/Matricula/materias/4
 	@PutMapping(path = "/{id}")
-	public void actualizar(@RequestBody Materia materia, @PathVariable Integer id) {
+	public ResponseEntity<Materia> actualizar(@RequestBody Materia materia, @PathVariable Integer id) {
 		materia.setId(id);
 		this.iMateriaService.actualizar(materia);
+		return ResponseEntity.status(238).body(materia);
 	}
-	
-	//http://localhost:8080/API/v1.0/Matricula/materias/4
+
+	// Nivel1
+	// http://localhost:8080/API/v1.0/Matricula/materias/4
 	@PatchMapping(path = "/{id}")
-	public void actualizarParcial(@RequestBody Materia materia,@PathVariable Integer id) {
+	public ResponseEntity<Materia> actualizarParcial(@RequestBody Materia materia, @PathVariable Integer id) {
 		materia.setId(id);
-		Materia materia2=this.iMateriaService.buscar(materia.getId());
-		if(materia.getNombre()!=null) {
+		Materia materia2 = this.iMateriaService.buscar(materia.getId());
+		if (materia.getNombre() != null) {
 			materia2.setNombre(materia.getNombre());
 		}
-		if(materia.getMateriaAntecesora()!=null) {
+		if (materia.getMateriaAntecesora() != null) {
 			materia2.setMateriaAntecesora(materia.getMateriaAntecesora());
 		}
-		if(materia.getModalidad()!=null) {
+		if (materia.getModalidad() != null) {
 			materia2.setModalidad(materia.getModalidad());
 		}
-		if(materia.getNumeroHoras()!=null) {
+		if (materia.getNumeroHoras() != null) {
 			materia2.setNumeroHoras(materia.getNumeroHoras());
 		}
-		if(materia.getTipo()!=null) {
+		if (materia.getTipo() != null) {
 			materia2.setTipo(materia.getTipo());
 		}
 
 		this.iMateriaService.actualizar(materia2);
+		return ResponseEntity.status(239).body(materia2);
 	}
-	
-	//http://localhost:8080/API/v1.0/Matricula/materias/6
+
+	// Nivel1
+	// http://localhost:8080/API/v1.0/Matricula/materias/6
 	@DeleteMapping(path = "/{id}")
-	public void borrar(@PathVariable Integer id) {
+	public ResponseEntity<String> borrar(@PathVariable Integer id) {
 		this.iMateriaService.borrar(id);
+		return ResponseEntity.status(240).body("Borrado");
 	}
-	
-	
-	//http://localhost:8080/API/v1.0/Matricula/materias/hora?hora=120
+
+	// Nivel1
+	// http://localhost:8080/API/v1.0/Matricula/materias/1
+	@GetMapping(path = "/{id}")
+	public ResponseEntity<Materia> buscar(@PathVariable Integer id) {
+		Materia mate1= this.iMateriaService.buscar(id);
+		return ResponseEntity.status(236).body(mate1);
+	}
+
+	// Nivel1
+	// http://localhost:8080/API/v1.0/Matricula/materias/hora?hora=120
 	@GetMapping(path = "/hora")
-	public List<Materia> buscarPorHora(@RequestParam Integer hora){
-		
-		return this.iMateriaService.buscarPorHoras(hora);
+	public ResponseEntity<List<Materia>> buscarPorHora(@RequestParam Integer hora) {
+		List<Materia> lista=this.iMateriaService.buscarPorHoras(hora);
+		return ResponseEntity.status(235).body(lista);
 	}
-	
+
 }
