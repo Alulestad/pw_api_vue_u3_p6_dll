@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +33,10 @@ public class MateriaController {
 	@PostMapping
 	public ResponseEntity<Materia> guardar(@RequestBody Materia materia) {
 		this.iMateriaService.guardar(materia);
-		// de manera temporanea hago directo, pero deberia
-		// cconsultar en la base de datos
-		return ResponseEntity.status(201).body(materia);
+		HttpHeaders cabeceras = new HttpHeaders();
+		cabeceras.add("mensaje_201", "Corresponde a la insercion de recursos");
+		//return ResponseEntity.status(201).body(this.iMateriaService.buscar(materia.getId()));
+		return new ResponseEntity<Materia>(this.iMateriaService.buscar(materia.getId()),cabeceras,201);
 	}
 
 	// Nivel1
@@ -42,8 +44,11 @@ public class MateriaController {
 	@PutMapping(path = "/{id}")
 	public ResponseEntity<Materia> actualizar(@RequestBody Materia materia, @PathVariable Integer id) {
 		materia.setId(id);
-		this.iMateriaService.actualizar(materia);
-		return ResponseEntity.status(238).body(materia);
+		this.iMateriaService.actualizar(materia);		
+		HttpHeaders cabeceras= new HttpHeaders();
+		cabeceras.add("mensaje_238", "Corresponde a la actualizacion de recursos");
+		//return ResponseEntity.status(238).body(this.iMateriaService.buscar(id));
+		return new ResponseEntity<Materia>(this.iMateriaService.buscar(id),cabeceras,238);
 	}
 
 	// Nivel1
@@ -69,7 +74,10 @@ public class MateriaController {
 		}
 
 		this.iMateriaService.actualizar(materia2);
-		return ResponseEntity.status(239).body(materia2);
+		//return ResponseEntity.status(239).body(materia2);
+		HttpHeaders cabeceras=new HttpHeaders();
+		cabeceras.add("mensaje_239", "Corresponde a la actualizacion de recursos parcial");
+		return new ResponseEntity<Materia>(materia2,cabeceras,239);
 	}
 
 	// Nivel1
@@ -77,7 +85,11 @@ public class MateriaController {
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity<String> borrar(@PathVariable Integer id) {
 		this.iMateriaService.borrar(id);
-		return ResponseEntity.status(240).body("Borrado");
+		//return ResponseEntity.status(240).body("Borrado");
+		HttpHeaders cabeceras= new HttpHeaders();
+		cabeceras.add("mensaje_240", "Corresponde a la eliminacion de recurso");
+		return new ResponseEntity<String>("Borrado",cabeceras,240);
+		
 	}
 
 	// Nivel1
@@ -85,7 +97,11 @@ public class MateriaController {
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<Materia> buscar(@PathVariable Integer id) {
 		Materia mate1= this.iMateriaService.buscar(id);
-		return ResponseEntity.status(236).body(mate1);
+		//return ResponseEntity.status(236).body(mate1);
+		HttpHeaders cb=new HttpHeaders();
+		cb.add("mensaje_236", "Corresponde a la busqueda de recursos");
+		return new ResponseEntity<Materia>(mate1,cb,236);
+	
 	}
 
 	// Nivel1
@@ -93,7 +109,10 @@ public class MateriaController {
 	@GetMapping(path = "/hora")
 	public ResponseEntity<List<Materia>> buscarPorHora(@RequestParam Integer hora) {
 		List<Materia> lista=this.iMateriaService.buscarPorHoras(hora);
-		return ResponseEntity.status(236).body(lista);
+		//return ResponseEntity.status(236).body(lista);
+		HttpHeaders cb=new HttpHeaders();
+		cb.add("mesaje_236", "Corresponde a la busqueda de recursos");
+		return new ResponseEntity<List<Materia>>(lista,cb,236);
 	}
 
 }
