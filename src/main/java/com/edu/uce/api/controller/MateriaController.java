@@ -93,7 +93,7 @@ public class MateriaController {
 	@GetMapping(path = "/hora")
 	public ResponseEntity<List<Materia>> buscarPorHora(@RequestParam Integer hora) {
 		List<Materia> lista=this.iMateriaService.buscarPorHoras(hora);
-		return ResponseEntity.status(235).body(lista);
+		return ResponseEntity.status(236).body(lista);
 	}
 
 }

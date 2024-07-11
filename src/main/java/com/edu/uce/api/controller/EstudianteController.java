@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -83,9 +84,14 @@ public class EstudianteController {
 	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/3
 	@GetMapping(path="/{id}")
 	public ResponseEntity<Estudiante> buscarPorId(@PathVariable Integer id) {
-
-		Estudiante es= this.estudianteService.buscar(id);
-		return ResponseEntity.status(236).body(es);
+		//Estudiante es= this.estudianteService.buscar(id);
+		//return ResponseEntity.status(236).body(es);
+		HttpHeaders cabeceras=new HttpHeaders();
+		cabeceras.add("mensaje_236", "Corresponde a la consulta de un recurso"); //clave: mensaje_236, valor: el resto.
+		cabeceras.add("valor", "Estudiante encontrado");
+		return new ResponseEntity<> (this.estudianteService.buscar(id),cabeceras,236); 
+		//1ra respuesta del body es this.... en el segundo mando las cabezeras y 3ro el codigo
+		
 	}
 	
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/buscarPorGenero?genero=F&edad=26
@@ -93,7 +99,7 @@ public class EstudianteController {
 	@GetMapping(path = "/genero")
 	public ResponseEntity<List<Estudiante>> buscarPorGenero(@RequestParam String genero) {
 		List <Estudiante> lista= this.estudianteService.buscarPorGenero(genero);
-		return ResponseEntity.status(235).body(lista);
+		return ResponseEntity.status(236).body(lista);
 	}
 	
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/buscarMixto/3?prueba=HolaMundo
