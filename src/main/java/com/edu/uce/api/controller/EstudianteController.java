@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edu.uce.api.repository.modelo.Estudiante;
 import com.edu.uce.api.repository.modelo.Materia;
 import com.edu.uce.api.service.IEstudianteService;
+import com.edu.uce.api.service.IMateriaService;
+import com.edu.uce.api.service.to.EstudianteTO;
+import com.edu.uce.api.service.to.MateriaTO;
 
 @RestController
 @RequestMapping(path="/estudiantes") //el / aca no es absolutamente, poeque se puede poner luego en otro lado
@@ -30,6 +33,8 @@ public class EstudianteController {
 
 	@Autowired
 	private IEstudianteService iEstudianteService;
+	@Autowired
+	private IMateriaService iMateriaService;
 	
 	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes
 	@PostMapping(produces = "application/json", consumes = "application/xml")
@@ -144,6 +149,15 @@ public class EstudianteController {
 	public String prueba() {
 		String prueba ="Texto de prueba";
 		return prueba;
+	}
+	
+	//http://localhost:8080/API/v1.0/Matricula/estudiantes/hateoas/1
+	@GetMapping(path = "/hateoas/{id}")
+	public EstudianteTO buscarHateoas(@PathVariable Integer id){
+		EstudianteTO est=this.iEstudianteService.buscarPorId(id);
+		List<MateriaTO> lista= this.iMateriaService.buscarPorIdEstudiante(id);
+		est.setMateriaTOs(lista);
+		return est;
 	}
 	
 	

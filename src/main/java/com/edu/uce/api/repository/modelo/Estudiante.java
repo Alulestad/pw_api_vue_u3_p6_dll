@@ -1,24 +1,27 @@
 package com.edu.uce.api.repository.modelo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="estudiante")
+@Table(name = "estudiante")
 public class Estudiante {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_estudiante")
-	//el generator si debe coincidir con el name del SequenceGenerator
+	// el generator si debe coincidir con el name del SequenceGenerator
 	@SequenceGenerator(name = "seq_estudiante", sequenceName = "seq_estudiante", allocationSize = 1)
-	//el name es el nombre que le pongo al @SequenceGenerator
+	// el name es el nombre que le pongo al @SequenceGenerator
 	@Column(name = "estu_id")
 	private Integer id;
 	@Column(name = "estu_nombre")
@@ -29,47 +32,66 @@ public class Estudiante {
 	private LocalDateTime fechaNacimiento;
 	@Column(name = "estu_genero")
 	private String genero;
+
+	@OneToMany(mappedBy = "estudiante")
+	private List<Materia> materias;
+
 	
-	//GET Y SET
 	
+	// GET Y SET
+
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	public String getNombre() {
 		return nombre;
 	}
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+
 	public String getApellido() {
 		return apellido;
 	}
+
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	}
+
 	public LocalDateTime getFechaNacimiento() {
 		return fechaNacimiento;
 	}
+
 	public void setFechaNacimiento(LocalDateTime fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
 	}
+
 	public String getGenero() {
 		return genero;
 	}
+
 	public void setGenero(String genero) {
 		this.genero = genero;
 	}
-	
+
+	public List<Materia> getMaterias() {
+		return materias;
+	}
+
+	public void setMaterias(List<Materia> materias) {
+		this.materias = materias;
+	}
+
 	@Override
 	public String toString() {
 		return "Estudiante [id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + ", fechaNacimiento="
 				+ fechaNacimiento + ", genero=" + genero + "]";
 	}
-	
-	
-	
-	
+
 }

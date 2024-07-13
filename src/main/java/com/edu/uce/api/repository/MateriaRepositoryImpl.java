@@ -25,6 +25,15 @@ public class MateriaRepositoryImpl implements IMateriaRepository {
 		
 		return this.entityManager.find(Materia.class, id);
 	}
+	
+	@Override
+	public List<Materia> seleccionarPorIdEstudiante(Integer id) {
+		TypedQuery<Materia> myQuery=this.entityManager.createQuery("select m from Materia m where m.estudiante.id=:id ",Materia.class);
+		myQuery.setParameter("id", id);
+		
+		return myQuery.getResultList();
+	}
+	
 
 	@Override
 	public void actualizar(Materia materia) {
@@ -51,5 +60,9 @@ public class MateriaRepositoryImpl implements IMateriaRepository {
 		myQueryTyped.setParameter("datoHoras", horas);
 		return myQueryTyped.getResultList();
 	}
+
+
+
+	
 
 }
