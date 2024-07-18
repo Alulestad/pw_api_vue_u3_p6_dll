@@ -18,6 +18,7 @@ public class MateriaTO implements Serializable{
 	private String tipo; // Profesional, Basico u optativa
 	private String materiaAntecesora;
 	
+	
 	//Get and Set
 	public Integer getId() {
 		return id;

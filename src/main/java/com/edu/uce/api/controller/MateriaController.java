@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edu.uce.api.repository.modelo.Estudiante;
 import com.edu.uce.api.repository.modelo.Materia;
 import com.edu.uce.api.service.IMateriaService;
+import com.edu.uce.api.service.to.MateriaTO;
 
 @RestController
 @RequestMapping(path = "/materias")
@@ -114,6 +115,12 @@ public class MateriaController {
 		HttpHeaders cb=new HttpHeaders();
 		cb.add("mesaje_236", "Corresponde a la busqueda de recursos");
 		return new ResponseEntity<List<Materia>>(lista,cb,236);
+	}
+	
+	// http://localhost:8080/API/v1.0/Matricula/estudiantes/2/materias GET
+	@GetMapping(path = "/{id}/materias", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<MateriaTO> buscarMateriasPorIdEtudiante(@PathVariable Integer id) {
+		return this.iMateriaService.buscarPorIdEstudiante(id);
 	}
 
 }

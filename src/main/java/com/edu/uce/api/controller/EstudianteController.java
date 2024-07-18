@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +27,9 @@ import com.edu.uce.api.service.IEstudianteService;
 import com.edu.uce.api.service.IMateriaService;
 import com.edu.uce.api.service.to.EstudianteTO;
 import com.edu.uce.api.service.to.MateriaTO;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(path="/estudiantes") //el / aca no es absolutamente, poeque se puede poner luego en otro lado
@@ -95,7 +99,7 @@ public class EstudianteController {
 	
 
 	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/3
-	@GetMapping(path="/{id}", produces = "application/xml")
+	@GetMapping(path="/{id}", produces = "application/json")
 	public ResponseEntity<Estudiante> buscarPorId(@PathVariable Integer id) {
 		HttpHeaders cabeceras=new HttpHeaders();
 		cabeceras.add("mensaje_236", "Corresponde a la consulta de un recurso"); //clave: mensaje_236, valor: el resto.
@@ -152,14 +156,27 @@ public class EstudianteController {
 	}
 	
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/hateoas/1
-	@GetMapping(path = "/hateoas/{id}")
+	
+	@GetMapping(path = "/hateoas/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public EstudianteTO buscarHateoas(@PathVariable Integer id){
 		EstudianteTO est=this.iEstudianteService.buscarPorId(id);
-		List<MateriaTO> lista= this.iMateriaService.buscarPorIdEstudiante(id);
-		est.setMateriaTOs(lista);
+		
+		//ERROR: esto es una carga EAGER.
+		//List<MateriaTO> lista= this.iMateriaService.buscarPorIdEstudiante(id);	
+		//est.setMateriaTOs(lista);
+		Link myLink=linkTo(methodOn(EstudianteController.class).buscarMateriasPorIdEtudiante(id)).withRel("susMaterias"); //referencia susMaterias
+		Link myLink2=linkTo(methodOn(EstudianteController.class).buscarPorId(id)).withSelfRel(); //agrega una referencia a si mismo.
+		
+		est.add(myLink);
+		est.add(myLink2);
+		
 		return est;
 	}
 	
-	
+	//http://localhost:8080/API/v1.0/Matricula/estudiantes/2/materias GET
+	@GetMapping(path = "/{id}/materias",produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<MateriaTO> buscarMateriasPorIdEtudiante (@PathVariable Integer id){
+		return this.iMateriaService.buscarPorIdEstudiante(id);
+	}
 	
 }
