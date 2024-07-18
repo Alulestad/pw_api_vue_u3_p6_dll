@@ -1,6 +1,7 @@
 package com.edu.uce.api.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,4 +180,17 @@ public class EstudianteController {
 		return this.iMateriaService.buscarPorIdEstudiante(id);
 	}
 	
+	//http://localhost:8080/API/v1.0/Matricula/estudiantes
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<EstudianteTO> buscarTodos() {
+		List<EstudianteTO> estudianteTOs = iEstudianteService.buscarTodos();
+
+		for (EstudianteTO estuTO : estudianteTOs) {
+			Link myLink = linkTo(methodOn(EstudianteController.class).buscarMateriasPorIdEtudiante(estuTO.getId())).withRel("susMaterias");
+			estuTO.add(myLink);
+		}
+
+		return estudianteTOs;
+	}
+
 }

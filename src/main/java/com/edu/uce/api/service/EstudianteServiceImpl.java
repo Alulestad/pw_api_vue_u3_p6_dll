@@ -1,9 +1,9 @@
 package com.edu.uce.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.edu.uce.api.repository.IEstudianteRepository;
@@ -63,5 +63,21 @@ public class EstudianteServiceImpl implements IEstudianteService {
 		
 		return this.convertir(est);
 	}
+
+	@Override
+	public List<EstudianteTO> buscarTodos() {
+		List<Estudiante> estudiantes=this.estudianteRepository.seleccionarTodos();
+		List<EstudianteTO> estudianteTOs=new ArrayList<>();
+		for ( Estudiante estu : estudiantes) {
+			estudianteTOs.add(this.convertir(estu));
+		}
+		
+		
+		return estudianteTOs;
+	}
+	
+	
+	
+	
 
 }

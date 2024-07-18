@@ -48,6 +48,12 @@ public class EstudianteRepositoryImpl implements IEstudianteRepository {
 		return myQuery.getResultList();
 	}
 	
+	@Override
+	public List<Estudiante> seleccionarTodos() {
+		TypedQuery<Estudiante> myQuery = this.entityManager.createQuery("SELECT e FROM Estudiante e",Estudiante.class);
+		return myQuery.getResultList();
+	}
+	
 	
 
 }
