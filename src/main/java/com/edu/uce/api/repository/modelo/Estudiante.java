@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "estudiante")
-@JsonIgnoreProperties(value="materias")
+@JsonIgnoreProperties(value = "materias")
 public class Estudiante {
 
 	@Id
@@ -28,6 +28,8 @@ public class Estudiante {
 	// el name es el nombre que le pongo al @SequenceGenerator
 	@Column(name = "estu_id")
 	private Integer id;
+	@Column(name = "estu_cedula")
+	private String cedula;
 	@Column(name = "estu_nombre")
 	private String nombre;
 	@Column(name = "estu_apellido")
@@ -40,9 +42,15 @@ public class Estudiante {
 	@OneToMany(mappedBy = "estudiante")
 	private List<Materia> materias;
 
-	
-	
 	// GET Y SET
+
+	public String getCedula() {
+		return cedula;
+	}
+
+	public void setCedula(String cedula) {
+		this.cedula = cedula;
+	}
 
 	public Integer getId() {
 		return id;

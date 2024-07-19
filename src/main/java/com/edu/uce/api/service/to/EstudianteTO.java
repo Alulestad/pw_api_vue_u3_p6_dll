@@ -16,6 +16,7 @@ public class EstudianteTO extends RepresentationModel<EstudianteTO> implements S
 	private static final long serialVersionUID = 968762004004279482L;  //generate i serial number en la izquierda 
 
 	private Integer id;
+	private String cedula;
 	private String nombre;
 	private String apellido;
 	private LocalDateTime fechaNacimiento;
@@ -24,6 +25,12 @@ public class EstudianteTO extends RepresentationModel<EstudianteTO> implements S
 	
 
 	
+	public String getCedula() {
+		return cedula;
+	}
+	public void setCedula(String cedula) {
+		this.cedula = cedula;
+	}
 	public Integer getId() {
 		return id;
 	}

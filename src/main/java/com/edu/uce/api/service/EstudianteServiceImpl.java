@@ -52,6 +52,7 @@ public class EstudianteServiceImpl implements IEstudianteService {
 		estuTo.setFechaNacimiento(estu.getFechaNacimiento());
 		estuTo.setGenero(estu.getGenero());
 		estuTo.setNombre(estu.getNombre());
+		estuTo.setCedula(estu.getCedula());
 		return estuTo;
 		
 		
@@ -75,6 +76,20 @@ public class EstudianteServiceImpl implements IEstudianteService {
 		
 		return estudianteTOs;
 	}
+
+	@Override
+	public EstudianteTO buscarPorCedula(String cedula) {
+		
+		return this.convertir(this.estudianteRepository.seleccionarPorCedula(cedula));
+	}
+
+	@Override
+	public void eliminarPorCedula(String cedula) {
+		this.estudianteRepository.eliminarPorCedula(cedula);
+		
+	}
+	
+	
 	
 	
 	

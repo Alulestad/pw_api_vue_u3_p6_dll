@@ -17,5 +17,10 @@ public interface IEstudianteRepository {
 	
 	public List<Estudiante> seleccionarTodos();
 	
+	//CRUD cedula
+	public Estudiante seleccionarPorCedula(String cedula);
+	public void eliminarPorCedula(String cedula);
+	
+	
 
 }

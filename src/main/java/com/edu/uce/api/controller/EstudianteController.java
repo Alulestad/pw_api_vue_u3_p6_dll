@@ -192,5 +192,31 @@ public class EstudianteController {
 
 		return estudianteTOs;
 	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//CRUD CEDULA
+	//http://localhost:8080/API/v1.0/Matricula/estudiantes/page/3
+	@GetMapping(path="/page/{cedula}", produces = "application/json")
+	public ResponseEntity<EstudianteTO> buscarPorCedula(@PathVariable String cedula) {
+		EstudianteTO est=this.iEstudianteService.buscarPorCedula(cedula);
+		HttpHeaders cabeceras=new HttpHeaders();
+		cabeceras.add("mensaje_236", "Corresponde a la consulta de un recurso"); //clave: mensaje_236, valor: el resto.
+		Link myLink=linkTo(methodOn(EstudianteController.class).buscarMateriasPorIdEtudiante(est.getId())).withRel("susMaterias"); //referencia susMaterias
+		
+		est.add(myLink);
+		
+		return new ResponseEntity<> (est,cabeceras,236); 
+		
+	}
+	
+	// http://localhost:8080/API/v1.0/Matricula/estudiantes/page/3
+	@DeleteMapping(path = "/page/{cedula}")
+	public ResponseEntity<String> eliminarPorCedula(@PathVariable String cedula) {
+		this.iEstudianteService.eliminarPorCedula(cedula);
+		HttpHeaders cabeceras = new HttpHeaders();
+		cabeceras.add("mensaje_240", "Corresponde a la eliminacion de un recurso");
+
+		return new ResponseEntity<>("Borrado", cabeceras, 240);
+
+	}
 
 }
