@@ -89,6 +89,26 @@ public class EstudianteServiceImpl implements IEstudianteService {
 		
 	}
 	
+	public Estudiante estudianteTOtoEstudiante(EstudianteTO estudianteTO) {
+		Estudiante estu= new Estudiante();
+		estu.setCedula(estudianteTO.getCedula());
+		estu.setNombre(estudianteTO.getNombre());
+		estu.setApellido(estudianteTO.getApellido());
+		estu.setFechaNacimiento(estudianteTO.getFechaNacimiento());
+		estu.setGenero(estudianteTO.getGenero());
+		return estu;
+		
+	}
+
+	@Override
+	public void guardarTO(EstudianteTO estudianteTO) {
+		Estudiante estudiante=this.estudianteTOtoEstudiante(estudianteTO);
+		this.estudianteRepository.insertar(estudiante);
+		
+	}
+	
+	
+	
 	
 	
 	

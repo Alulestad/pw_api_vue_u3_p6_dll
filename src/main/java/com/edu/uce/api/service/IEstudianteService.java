@@ -26,4 +26,6 @@ public interface IEstudianteService {
 	public EstudianteTO buscarPorCedula(String cedula);
 
 	public void eliminarPorCedula(String cedula);
+	
+	public void guardarTO(EstudianteTO estudianteTO);
 }

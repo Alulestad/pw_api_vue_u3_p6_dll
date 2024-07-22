@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.HttpHeadResponseDecorator;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,6 +36,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(path="/estudiantes") //el / aca no es absolutamente, poeque se puede poner luego en otro lado
+//@CrossOrigin(value = "http://localhost:8081")
+@CrossOrigin
 public class EstudianteController {
 
 	@Autowired
@@ -41,7 +45,7 @@ public class EstudianteController {
 	@Autowired
 	private IMateriaService iMateriaService;
 	
-	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes
+	//Nivel 1: http://localhost:8081/API/v1.0/Matricula/estudiantes
 	@PostMapping(produces = "application/json", consumes = "application/xml")
 	public ResponseEntity<Estudiante> guardar(@RequestBody Estudiante est) {
 		HttpHeaders headers=new HttpHeaders();
@@ -51,19 +55,19 @@ public class EstudianteController {
 		return new ResponseEntity<Estudiante>(this.iEstudianteService.buscar(est.getId()),headers,HttpStatus.CREATED);
 	}
 	
-	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/3
-	@PutMapping(path = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
-	public ResponseEntity<Estudiante> actualizar(@RequestBody Estudiante est, @PathVariable Integer id) {
+	//Nivel 1: http://localhost:8081/API/v1.0/Matricula/estudiantes/3
+	@PutMapping(path = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EstudianteTO> actualizar(@RequestBody Estudiante est, @PathVariable Integer id) {
 		est.setId(id);
 		this.iEstudianteService.actualizar(est);
-		Estudiante est1=this.iEstudianteService.buscar(id);
-		//return ResponseEntity.status(238).body(est1);
+		EstudianteTO est1=this.iEstudianteService.buscarPorId(id);
 		HttpHeaders headers=new HttpHeaders();
 		headers.add("mensaje_238", "corresponde a la actualizacion de recursos");
+		//return ResponseEntity.status(238).body(est1);
 		return new ResponseEntity<>(est1, headers,238);
 	}
 	
-	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/3
+	//Nivel 1: http://localhost:8081/API/v1.0/Matricula/estudiantes/3
 	@PatchMapping(path = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
 	public ResponseEntity<Estudiante> actualizarParcial(@RequestBody Estudiante est, @PathVariable Integer id) {
 		est.setId(id);
@@ -87,7 +91,7 @@ public class EstudianteController {
 	}
 	
 	//para 2 variables: path = "/borrar2/{id}/{id2}" y @PathVariable Integer id,@PathVariable Integer id2
-	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/5
+	//Nivel 1: http://localhost:8081/API/v1.0/Matricula/estudiantes/5
 	@DeleteMapping(path = "/{id}",produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> borrar(@PathVariable Integer id) {
 		System.out.println("Borrar");
@@ -99,19 +103,15 @@ public class EstudianteController {
 	}
 	
 
-	//Nivel 1: http://localhost:8080/API/v1.0/Matricula/estudiantes/3
+	//Nivel 1: http://localhost:8081/API/v1.0/Matricula/estudiantes/3
 	@GetMapping(path="/{id}", produces = "application/json")
 	public ResponseEntity<Estudiante> buscarPorId(@PathVariable Integer id) {
 		HttpHeaders cabeceras=new HttpHeaders();
-		cabeceras.add("mensaje_236", "Corresponde a la consulta de un recurso"); //clave: mensaje_236, valor: el resto.
+		cabeceras.add("mensaje_236", "Corresponde a la consulta de un recurso"); // Es: clave-valor
 		cabeceras.add("valor", "Estudiante encontrado");
 		
 		//return ResponseEntity.status(236).body(this.iEstudianteService.buscar(id));
 		return new ResponseEntity<> (this.iEstudianteService.buscar(id),cabeceras,236); 
-		//1ra respuesta del body es this.... en el segundo mando las cabezeras y 3ro el codigo
-		
-		
-		
 	}
 	
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/buscarPorGenero?genero=F&edad=26
@@ -132,7 +132,6 @@ public class EstudianteController {
 	public ResponseEntity<Estudiante> buscarMixto(@PathVariable Integer id,@RequestParam String prueba) {
 		System.out.println("id: "+id);
 		System.out.println("prueba: "+prueba);
-		//
 		HttpHeaders cb=new HttpHeaders();
 		cb.add("mesaje_236", "Corresponde a la busqueda de recursos");
 		return new ResponseEntity<Estudiante>(this.iEstudianteService.buscar(id),cb,236);
@@ -182,33 +181,46 @@ public class EstudianteController {
 	
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<EstudianteTO> buscarTodos() {
+	public ResponseEntity<List<EstudianteTO>> buscarTodos() {
 		List<EstudianteTO> estudianteTOs = iEstudianteService.buscarTodos();
 
 		for (EstudianteTO estuTO : estudianteTOs) {
 			Link myLink = linkTo(methodOn(EstudianteController.class).buscarMateriasPorIdEtudiante(estuTO.getId())).withRel("susMaterias");
 			estuTO.add(myLink);
 		}
-
-		return estudianteTOs;
+		HttpHeaders cabecera=new HttpHeaders();
+		cabecera.add("mensaje_236", "Corresponde a la consulta de un recurso");
+		return new ResponseEntity<List<EstudianteTO>>(estudianteTOs,cabecera,236);
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CRUD CEDULA
 	//http://localhost:8080/API/v1.0/Matricula/estudiantes/page/3
-	@GetMapping(path="/page/{cedula}", produces = "application/json")
+	@GetMapping(path="/page/{cedula}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<EstudianteTO> buscarPorCedula(@PathVariable String cedula) {
 		EstudianteTO est=this.iEstudianteService.buscarPorCedula(cedula);
 		HttpHeaders cabeceras=new HttpHeaders();
-		cabeceras.add("mensaje_236", "Corresponde a la consulta de un recurso"); //clave: mensaje_236, valor: el resto.
-		Link myLink=linkTo(methodOn(EstudianteController.class).buscarMateriasPorIdEtudiante(est.getId())).withRel("susMaterias"); //referencia susMaterias
-		
+		cabeceras.add("mensaje_236", "Corresponde a la consulta de un recurso"); //clave-valor
+		Link myLink=linkTo(methodOn(EstudianteController.class).buscarMateriasPorIdEtudiante(est.getId())).withRel("susMaterias");
 		est.add(myLink);
-		
 		return new ResponseEntity<> (est,cabeceras,236); 
 		
 	}
 	
-	// http://localhost:8080/API/v1.0/Matricula/estudiantes/page/3
+	//Nivel 1: http://localhost:8081/API/v1.0/Matricula/estudiantes/page/3
+	@PutMapping(path = "/page/{cedula}",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EstudianteTO> actualizarCedula(@RequestBody Estudiante est, @PathVariable String cedula) {
+		est.setCedula(cedula);
+		
+		EstudianteTO est1=this.iEstudianteService.buscarPorCedula(cedula);
+		est.setId(est1.getId());
+		this.iEstudianteService.actualizar(est);
+		//return ResponseEntity.status(238).body(est1);
+		HttpHeaders headers=new HttpHeaders();
+		headers.add("mensaje_238", "corresponde a la actualizacion de recursos");
+		return new ResponseEntity<>(est1, headers,238);
+	}
+	
+	// http://localhost:8081/API/v1.0/Matricula/estudiantes/page/3
 	@DeleteMapping(path = "/page/{cedula}")
 	public ResponseEntity<String> eliminarPorCedula(@PathVariable String cedula) {
 		this.iEstudianteService.eliminarPorCedula(cedula);
@@ -217,6 +229,15 @@ public class EstudianteController {
 
 		return new ResponseEntity<>("Borrado", cabeceras, 240);
 
+	}
+	
+	//http://localhost:8081/API/v1.0/Matricula/estudiantes/page
+	@PostMapping(path = "/page",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EstudianteTO> guardarTO(@RequestBody EstudianteTO estudianteTO){
+		this.iEstudianteService.guardarTO(estudianteTO);
+		HttpHeaders cabeceras=new HttpHeaders();
+		cabeceras.add("mensaje_201", "Codigo 201 indica el guardado del recurso");
+		return new ResponseEntity<>(this.iEstudianteService.buscarPorCedula(estudianteTO.getCedula()),cabeceras,201);
 	}
 
 }
